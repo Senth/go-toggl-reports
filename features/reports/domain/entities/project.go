@@ -4,5 +4,5 @@ package entities
 type Project struct {
 	Name string
 	Color string
-	Tasks map[string]*Task
+	Tasks []*Task
 }

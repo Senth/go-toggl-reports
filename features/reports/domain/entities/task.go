@@ -10,4 +10,5 @@ type Task struct {
 	End 	*time.Time
 	// Duration in seconds
 	Duration int
+	Tags 	[]string
 }

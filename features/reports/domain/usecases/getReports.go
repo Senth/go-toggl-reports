@@ -3,20 +3,30 @@ package usecases
 import (
 	"time"
 
-	"github.com/Senth/go-toggl-reports/core"
+	coretime "github.com/Senth/go-toggl-reports/core/time"
+	"github.com/Senth/go-toggl-reports/features/reports/data/repositories"
 	"github.com/Senth/go-toggl-reports/features/reports/domain/entities"
 )
 
-// GetReports Use case that get all reports between two dates
-func GetReports(start *time.Time, end *time.Time) (report *entities.Report, err *core.Error) {
-
-
-	return
+// Reports contains the access repositories
+type Reports struct {
+	repo repositories.TaskFetcher
 }
 
-func GetReportsThisWeek() (report *entities.Report, err *core.Error) {
-	// TODO
-	// now := time.Now()
+// NewReports Creates a new reports function
+func NewReports(r repositories.TaskFetcher) *Reports {
+	return &Reports{
+		repo: r,
+	}
+}
 
-	return
+// Between Get the report (tasks) between two dates
+func (r *Reports) Between(start, end *time.Time) (report *entities.Report, err error) {
+	return &entities.Report{}, nil
+}
+
+// ThisWeek Get the report (tasks) for this week
+func (r *Reports) ThisWeek() (report *entities.Report, err error) {
+	now := time.Now()
+	return r.Between(coretime.StartOfWeek(now), coretime.EndOfWeek(now))
 }

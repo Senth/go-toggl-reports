@@ -1,11 +1,12 @@
 package repositories
 
 import (
-	"github.com/Senth/go-toggl-reports/core"
+	"time"
+
 	"github.com/Senth/go-toggl-reports/features/reports/data/models"
 )
 
-// Report Repository for getting reports
-type Report interface {
-	GetTasks(start int, end int) (models.Task, core.Error)
+// ReportInteractor Repository for getting reports
+type ReportInteractor interface {
+	GetTasks(start time.Time, end time.Time) (models.Task, error)
 }
