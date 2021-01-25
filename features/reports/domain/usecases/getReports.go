@@ -29,15 +29,15 @@ func (reports *Reports) ThisWeek() (r *entities.Report, err error) {
 
 // Between Get the report (tasks) between two dates
 func (reports *Reports) Between(start, end time.Time) (r *entities.Report, err error) {
-	modelTasks, _ := reports.repo.Tasks(start, end);
+	modelTasks, _ := reports.repo.Tasks(start, end)
 
-	r = entities.NewEmptyReport();
+	r = entities.NewEmptyReport()
 	for _, m := range *modelTasks {
-		task := newTaskFromModel(&m);
-		addTaskToReport(task, r);
-		project := getProject(m.Project, m.ProjectColor, r);
-		bindTaskAndProject(task, project);
-		addTaskToTags(task, r);
+		task := newTaskFromModel(&m)
+		addTaskToReport(task, r)
+		project := getProject(m.Project, m.ProjectColor, r)
+		bindTaskAndProject(task, project)
+		addTaskToTags(task, r)
 	}
 
 	return
@@ -56,37 +56,37 @@ func newTaskFromModel(m *models.Task) (*entities.Task) {
 
 // getProject get an existing project from the report, or create a new one
 func getProject(name string, color string, r *entities.Report) (*entities.Project) {
-	var project *entities.Project;
+	var project *entities.Project
 		if p, ok := r.ByProject[name]; ok {
-			project = p;
+			project = p
 		} else {
 			project = &entities.Project{
 				Name: name,
 				Color: color,
-			};
-			r.ByProject[name] = project;
+			}
+			r.ByProject[name] = project
 		}
-	return project;
+	return project
 }
 
 // bindTaskAndProject Bind task to project, and project to task
 func bindTaskAndProject(t* entities.Task, p* entities.Project) {
-	t.Project = p;
-	p.Tasks = append(p.Tasks, t);
+	t.Project = p
+	p.Tasks = append(p.Tasks, t)
 }
 
 func addTaskToReport(t* entities.Task, r* entities.Report) {
-	r.Tasks = append(r.Tasks, t);
+	r.Tasks = append(r.Tasks, t)
 }
 
 func addTaskToTags(t* entities.Task, r *entities.Report) {
 	for _, tagName := range t.Tags {
 		// Create tag array if not exists
 		if _, ok := r.ByTag[tagName]; !ok {
-			r.ByTag[tagName] = make([]*entities.Task, 0, 1);
+			r.ByTag[tagName] = make([]*entities.Task, 0, 1)
 		}
 
 		// Add task to tag
-		r.ByTag[tagName] = append(r.ByTag[tagName], t);
+		r.ByTag[tagName] = append(r.ByTag[tagName], t)
 	}
 }
