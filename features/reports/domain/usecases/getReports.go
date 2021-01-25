@@ -28,7 +28,7 @@ func (reports *Reports) ThisWeek() (r *entities.Report, err error) {
 }
 
 // Between Get the report (tasks) between two dates
-func (reports *Reports) Between(start, end *time.Time) (r *entities.Report, err error) {
+func (reports *Reports) Between(start, end time.Time) (r *entities.Report, err error) {
 	modelTasks, _ := reports.repo.Tasks(start, end);
 
 	r = entities.NewEmptyReport();
@@ -46,8 +46,8 @@ func (reports *Reports) Between(start, end *time.Time) (r *entities.Report, err 
 func newTaskFromModel(m *models.Task) (*entities.Task) {
 	task := &entities.Task{
 			Name: m.Description,
-			Start: &m.Start,
-			End: &m.End,
+			Start: m.Start,
+			End: m.End,
 			Duration: m.Duration,
 			Tags: m.Tags,
 		}

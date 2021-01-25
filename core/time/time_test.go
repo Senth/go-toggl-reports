@@ -30,8 +30,8 @@ func TestStartOfWeek(t *testing.T) {
 	for _, test := range startOfWeekResults {
 		result := coretime.StartOfWeek(test.in)
 
-		if *result != test.expected {
-			t.Errorf("Expected %v, Got: %v", test.expected, *result)
+		if result != test.expected {
+			t.Errorf("Expected %v, Got: %v", test.expected, result)
 		}
 	}
 }
@@ -52,8 +52,8 @@ func TestEndOfWeek(t *testing.T) {
 	for _, test := range endOfWeekResults {
 		result := coretime.EndOfWeek(test.in)
 
-		if *result != test.expected {
-			t.Errorf("Expected %v, Got: %v", test.expected, *result)
+		if result != test.expected {
+			t.Errorf("Expected %v, Got: %v", test.expected, result)
 		}
 	}
 }

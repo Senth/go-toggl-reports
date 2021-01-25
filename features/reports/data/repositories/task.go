@@ -9,5 +9,5 @@ import (
 // TaskFetcher fetches reports from somewhere
 type TaskFetcher interface {
 	// Tasks fetch all tasks between start and end time
-	Tasks(start, end *time.Time) (*[]models.Task, error)
+	Tasks(start, end time.Time) (*[]models.Task, error)
 }

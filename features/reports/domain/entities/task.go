@@ -6,8 +6,8 @@ import "time"
 type Task struct {
 	Project *Project
 	Name  string
-	Start *time.Time
-	End 	*time.Time
+	Start time.Time
+	End 	time.Time
 	// Duration in seconds
 	Duration int
 	Tags 	[]string

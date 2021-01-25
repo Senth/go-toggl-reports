@@ -69,8 +69,8 @@ func generateTasks() {
 		t := entities.Task{
 			Project:	project,
 			Name:     modelTask.Description,
-			Start:    &modelTask.Start,
-			End:      &modelTask.End,
+			Start:    modelTask.Start,
+			End:      modelTask.End,
 			Duration: modelTask.Duration,
 			Tags: 		modelTask.Tags,
 		}
@@ -87,7 +87,7 @@ func generateTasks() {
 	}
 }
 
-func (protoRepo) Tasks(start, end *time.Time) (*[]models.Task, error) {
+func (protoRepo) Tasks(start, end time.Time) (*[]models.Task, error) {
 	return modelTasks, nil
 }
 
@@ -115,7 +115,7 @@ func TestBetween(t *testing.T) {
 		},
 	}
 
-	r, err := usecase.Between(&data.start, &data.end)
+	r, err := usecase.Between(data.start, data.end)
 	if err != nil {
 		t.Errorf("Error not nil %v", err)
 	} else if r == nil {
