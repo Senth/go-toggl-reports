@@ -15,7 +15,7 @@ var stockholm, _ = time.LoadLocation("Europe/Stockholm")
 
 type protoRepo struct {}
 
-var modelTasks = &[]models.Task{
+var modelTasks = []*models.Task{
 	{
 		Description: "Coding",
 		Duration:     12557,
@@ -63,7 +63,7 @@ var tasks = []*entities.Task{}
 var tags = map[string][]*entities.Task{}
 
 func generateTasks() {
-	for _, modelTask := range *modelTasks {
+	for _, modelTask := range modelTasks {
 		project := projects[modelTask.Project]
 
 		t := entities.Task{
@@ -87,7 +87,7 @@ func generateTasks() {
 	}
 }
 
-func (protoRepo) Tasks(start, end time.Time) (*[]models.Task, error) {
+func (protoRepo) Tasks(workspaceID int, start, end time.Time) ([]*models.Task, error) {
 	return modelTasks, nil
 }
 
@@ -115,7 +115,7 @@ func TestBetween(t *testing.T) {
 		},
 	}
 
-	r, err := usecase.Between(data.start, data.end)
+	r, err := usecase.Between(1, data.start, data.end)
 	if err != nil {
 		t.Errorf("Error not nil %v", err)
 	} else if r == nil {

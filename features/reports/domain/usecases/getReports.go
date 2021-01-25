@@ -22,18 +22,18 @@ func NewReports(r repositories.TaskFetcher) *Reports {
 }
 
 // ThisWeek Get the report (tasks) for this week
-func (reports *Reports) ThisWeek() (r *entities.Report, err error) {
+func (reports *Reports) ThisWeek(workspaceID int) (r *entities.Report, err error) {
 	now := time.Now()
-	return reports.Between(coretime.StartOfWeek(now), coretime.EndOfWeek(now))
+	return reports.Between(workspaceID, coretime.StartOfWeek(now), coretime.EndOfWeek(now))
 }
 
 // Between Get the report (tasks) between two dates
-func (reports *Reports) Between(start, end time.Time) (r *entities.Report, err error) {
-	modelTasks, _ := reports.repo.Tasks(start, end)
+func (reports *Reports) Between(workspaceID int, start, end time.Time) (r *entities.Report, err error) {
+	modelTasks, _ := reports.repo.Tasks(workspaceID, start, end)
 
 	r = entities.NewEmptyReport()
-	for _, m := range *modelTasks {
-		task := newTaskFromModel(&m)
+	for _, m := range modelTasks {
+		task := newTaskFromModel(m)
 		addTaskToReport(task, r)
 		project := getProject(m.Project, m.ProjectColor, r)
 		bindTaskAndProject(task, project)
