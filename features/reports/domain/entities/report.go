@@ -63,3 +63,21 @@ func (r Report) String() string {
 	str += "\n\t},\n}\n"
 	return str
 }
+
+// NewReport create a new report
+func NewReport(tasks []*Task, projects map[string]*Project, tags map[string][]*Task) (*Report) {
+	return &Report{
+		Tasks: tasks,
+		ByProject: projects,
+		ByTag: tags,
+	}
+}
+
+// NewEmptyReport create a new empty report
+func NewEmptyReport() (*Report) {
+	return &Report{
+		Tasks: []*Task{},
+		ByProject: map[string]*Project{},
+		ByTag: map[string][]*Task{},
+	}
+}
