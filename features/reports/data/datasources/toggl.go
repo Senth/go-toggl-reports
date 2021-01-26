@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"time"
 
@@ -29,9 +30,15 @@ func NewTogglAPI(token, email string) TogglAPI {
 
 // Tasks Get all tasks betwene specified dates
 func (api TogglAPI) Tasks(workspaceID int, start, end time.Time) ([]*models.Task, error) {
-	// TODO use start and end times
+	route := createRoute(
+		"details",
+		map[string]interface{}{
+			"start": api.dateFormatter.toTogglDate(start),
+			"end": api.dateFormatter.toTogglDate(end),
+		},
+	)
 
-	obj, err := api.request("GET", "details")
+	obj, err := api.request(http.MethodGet, route)
 	if err != nil {
 		return nil, err
 	}
@@ -58,13 +65,16 @@ func (api TogglAPI) Tasks(workspaceID int, start, end time.Time) ([]*models.Task
 			tags = append(tags, tag)
 		}
 
+		// Duration rounded to whole seconds
+		duration := int(math.Round(dataTask["dur"].(float64) / 1000.0))
+
 		task := &models.Task{
 			Description: dataTask["description"].(string),
 			Project: dataTask["project"].(string),
 			ProjectColor: dataTask["project_hex_color"].(string),
 			Start: start,
 			End: end,
-			Duration: int(dataTask["dur"].(float64)),
+			Duration: duration,
 			Tags: tags,
 		}
 
@@ -72,6 +82,24 @@ func (api TogglAPI) Tasks(workspaceID int, start, end time.Time) ([]*models.Task
 	}
 
 	return tasks, nil
+}
+
+func createRoute(path string, arguments map[string]interface{}) string {
+	route := path
+
+	first := true
+	for k, v := range arguments {
+		if first {
+			route += "?"
+			first = false
+		} else {
+			route += "&"
+		}
+
+		route += fmt.Sprintf("%s=%v", k, v)
+	}
+
+	return route
 }
 
 // HTTPClient Interface for the Client

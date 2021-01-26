@@ -37,8 +37,6 @@ func TestNewTogglAPI(t *testing.T) {
 type testClient struct {}
 
 func (c testClient) Do(req *http.Request) (*http.Response, error) {
-
-
 	resp := &http.Response{
 		StatusCode: 200,
 		Body: ioutil.NopCloser(strings.NewReader(tasksJSON)),
@@ -49,8 +47,7 @@ func (c testClient) Do(req *http.Request) (*http.Response, error) {
 
 func TestTasks(t *testing.T) {
 	Client = testClient{}
-	// stockholm, _ := time.LoadLocation("Europe/Stockholm")
-	local := time.Local
+	stockholm, _ := time.LoadLocation("Europe/Stockholm")
 	togglAPI := NewTogglAPI("my-token", "my.email@example.com")
 
 	test := struct{
@@ -65,8 +62,8 @@ func TestTasks(t *testing.T) {
 				Description: "Studera React Redux",
 				Project: "Work",
 				ProjectColor: "#990099",
-				Start: time.Date(2021, 1, 25, 7, 49, 46, 0, local),
-				End: time.Date(2021, 1, 25, 8, 34, 31, 0, local),
+				Start: time.Date(2021, 1, 25, 7, 49, 46, 0, stockholm),
+				End: time.Date(2021, 1, 25, 8, 34, 31, 0, stockholm),
 				Duration: int(math.Round(float64(2685661) / 1000)),
 				Tags: []string{"core-study"},
 			},
@@ -74,8 +71,8 @@ func TestTasks(t *testing.T) {
 				Description: "Add SqliteGateway tests #test",
 				Project: "My Musical Repertoire",
 				ProjectColor: "#465bb3",
-				Start: time.Date(2021, 1, 24, 18, 39, 29, 0, local),
-				End: time.Date(2021, 1, 24, 20, 7, 43, 0, local),
+				Start: time.Date(2021, 1, 24, 18, 39, 29, 0, stockholm),
+				End: time.Date(2021, 1, 24, 20, 7, 43, 0, stockholm),
 				Duration: 5294,
 				Tags: []string{},
 			},
@@ -83,8 +80,8 @@ func TestTasks(t *testing.T) {
 				Description: "Reddit helper",
 				Project: "Personal Development",
 				ProjectColor: "#2da608",
-				Start: time.Date(2021, 1, 24, 11, 11, 38, 0, local),
-				End: time.Date(2021, 1, 24, 11, 53, 38, 0, local),
+				Start: time.Date(2021, 1, 24, 11, 11, 38, 0, stockholm),
+				End: time.Date(2021, 1, 24, 11, 53, 38, 0, stockholm),
 				Duration: 2520,
 				Tags: []string{"helper"},
 			},
@@ -98,9 +95,37 @@ func TestTasks(t *testing.T) {
 	}
 
 	// Check that they are equal (can't use deep equality here)
+	for i := 0; i < len(result); i++ {
+		expectedTask := test.expect[i]
+		resultTask := result[i]
 
-	if !reflect.DeepEqual(test.expect, result) {
-		t.Errorf("Tasks where not equal\nExpected: %+v\nGot: %+v\n", test.expect, result)
+		if expectedTask.Description != resultTask.Description {
+			t.Errorf("Expected description (%v) not equal to gotten (%v)", expectedTask.Description, resultTask.Description)
+		}
+
+		if expectedTask.Project != resultTask.Project{
+			t.Errorf("Expected project (%v) not equal to gotten (%v)", expectedTask.Project, resultTask.Project)
+		}
+
+		if expectedTask.ProjectColor != resultTask.ProjectColor {
+			t.Errorf("Expected project color (%v) not equal to gotten (%v)", expectedTask.ProjectColor, resultTask.ProjectColor)
+		}
+
+		if expectedTask.Duration != resultTask.Duration {
+			t.Errorf("Expected duration (%v) not equal to gotten (%v)", expectedTask.Duration, resultTask.Duration)
+		}
+
+		if expectedTask.Start.Format(time.RFC3339) != resultTask.Start.Format(time.RFC3339) {
+			t.Errorf("Expected start time (%v) not equal to gotten (%v)", expectedTask.Start, resultTask.Start)
+		}
+
+		if expectedTask.End.Format(time.RFC3339) != resultTask.End.Format(time.RFC3339) {
+			t.Errorf("Expected start time (%v) not equal to gotten (%v)", expectedTask.Start, resultTask.Start)
+		}
+
+		if !reflect.DeepEqual(expectedTask.Tags, resultTask.Tags) {
+			t.Errorf("Expected tags (%v) not equal to gotten (%v)", expectedTask.Tags, resultTask.Tags)
+		}
 	}
 }
 
